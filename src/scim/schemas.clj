@@ -6,6 +6,7 @@
    [uui]
    [uui.heroicons :as ico]
    [clojure.string :as str]
+   [cheshire.core]
    [scim.repo]))
 
 ;;models
@@ -67,16 +68,23 @@
           (mapcat (fn [sat] (attribute-rows sat (inc ident))))))))
 
 (defn show [context {{id :id} :route-params :as request}]
-  (let [sch (scim.repo/read-resource context {:resourceType "schema" :id id})]
-    (uui/layout
-     context request
-     [:div
-      [:h1.uui-h1 (:name sch)]
-      [:h2.uui-h2 (:id sch)]
-      [:table.uui-table {:class "text-sm border border-gray-200"}
-       [:tbody
-        (->> (:attributes sch)
-             (mapcat attribute-rows))]]])))
+  (let [sch (scim.repo/read-resource context {:resourceType "schema" :id id})
+        tabs (uui/tabs request
+              "Schema" (fn []
+                         [:table.uui-table {:class "text-sm border border-gray-200"}
+                          [:tbody (mapcat attribute-rows (:attributes sch))]])
+              "JSON" (fn []
+                       [:pre.uui-code
+                        (cheshire.core/generate-string sch {:pretty true})]))]
+    (if (uui/hx-target request)
+      (uui/response tabs)
+      (uui/layout
+       context request
+       [:div
+        (uui/breadcramp ["/scim/ui/Schemas" "Schemas"] ["#" (:id sch)])
+        [:h1.uui-h1 {:class "mt-4"} (:name sch)]
+        [:p.uui-text {:class "my-4"} (:description sch)]
+        tabs]))))
 
 (defn create [context request])
 (defn update [context request])
