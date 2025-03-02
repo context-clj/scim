@@ -7,6 +7,7 @@
    [uui.heroicons :as ico]
    [clojure.string :as str]
    [cheshire.core]
+   [scim.validator]
    [scim.repo]))
 
 ;;models
@@ -67,13 +68,41 @@
      (->> (:subAttributes at)
           (mapcat (fn [sat] (attribute-rows sat (inc ident))))))))
 
+(defn do-validate [context request opts]
+  (try
+    (let [form (http/form-decode (slurp (:body request)))
+          sch (pg.repo/read context {:table "scim.schema" :match {:id (get form "schema")}})
+          res (cheshire.core/parse-string (get form "resource"))
+          errors (scim.validator/validate sch res)]
+      [:div  {:class "mt-4"}
+       (if (empty? errors)
+         [:div {:class "text-green-600 p-4 border rounded-lg border-green-200 bg-green-50"} "Valid resource"]
+         [:div {:class "text-red-600 p-4 border rounded-lg border-red-200 bg-red-50"}
+          [:ul {:class "ml-4 list-disc"}
+           (for [er errors]
+             [:li (:type er) " " (str/join "." (:path er))
+              " " (pr-str (dissoc er :type :path))])]])])
+    (catch Exception e
+      [:div {:class "mt-4 text-red-600 p-4 border rounded-lg border-red-200 bg-red-50"}
+       (.getMessage e)])))
+
+(defn validate-tab [context request sd]
+  [:div
+   [:form {:hx-post (uui/rpc #'do-validate) :hx-target "#result"}
+    [:input {:type "hidden" :name "schema" :value (:id sd)}]
+    [:textarea {:class "w-full h-60 border p-4" :name "resource"}]
+    [:button.uui-btn {:class "mt-4" :type "submit"} "Validate"]]
+   [:div#result]])
+
 (defn show [context {{id :id} :route-params :as request}]
   (let [sch (scim.repo/read-resource context {:resourceType "schema" :id id})
         tabs (uui/tabs request
               "Schema" (fn []
                          [:table.uui-table {:class "text-sm border border-gray-200"}
                           [:tbody (mapcat attribute-rows (:attributes sch))]])
-              "JSON" (fn [] (uui/json-block sch)))]
+              "JSON" (fn [] (uui/json-block sch))
+              "Validate" (fn [] (validate-tab context request sch))
+              )]
     (if (uui/hx-target request)
       (uui/response tabs)
       (uui/layout

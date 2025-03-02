@@ -17,6 +17,7 @@
     (int? value) "integer"
     (number? value) "number"
     (map? value) "complex"
+    (boolean? value) "boolean"
     :else (str (type value))))
 
 (defmethod validate-rule
