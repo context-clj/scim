@@ -4,6 +4,7 @@
             [pg]
             [pg.repo]
             [cheshire.core]
+            [uui]
             [clojure.java.io :as io]))
 
 
@@ -45,11 +46,23 @@
 (defn search-resource-api  [context request]
   {:status 200})
 
+(defn index [context request]
+  (uui/boost-response
+   context request
+   [:div
+    [:h1 "Hello"]
+    [:br]
+    [:a {} "ResourceTypes"]
+    [:br]
+    [:a {} "Schemas"]
+
+    ]))
+
 (defn mount-routes [context]
-  (http/register-endpoint
-   context {:method :get
-            :path "/scim/v2/:resource-type"
-            :fn #'search-resource-api}))
+  (http/register-endpoint context {:method :get :path "/scim/v2/:resource-type" :fn #'search-resource-api})
+  (http/register-endpoint context {:method :get :path "/" :fn #'index})
+
+  )
 
 (system/defstart
   [context config]
@@ -59,51 +72,33 @@
   {})
 
 (def default-config
-  {:services ["pg" "pg.repo" "scim"]
+  {:services ["pg" "pg.repo" "http" "uui" "scim"]
    :http {:port 8885}})
+
 
 (comment
   (require '[pg.docker :as pgd])
+  (require '[system.dev :as dev])
+
+  (dev/update-libs)
 
   (pgd/delete-pg "scim-pg")
 
   (def pg-config (pgd/ensure-pg "scim-pg"))
 
   (def context (system/start-system (assoc default-config :pg pg-config)))
+  (system/stop-system context)
 
   (mount-routes context)
 
-  (system/stop-system context)
+
 
   (pg/execute! context {:sql ["select 1"]})
-
-  ;; (pg/generate-migration "init-scim")
-
-
-  (def schemas (cheshire.core/parse-string (slurp (io/resource "scim-v2.json")) keyword))
-
-  (keys schemas)
-
-  (->> (:ServiceProviderConfigs schemas))
-
-  (->> (:Resources (:Schemas schemas))
-       ;; (first)
-       (mapv :id))
-
-  ;; scim.ResourceType <- create -> create table
-  ;; scim.Schema
-  ;; scim.User
-  ;; scim.Group
-  ;; -- scim.Membership
-
 
   (pg/migrate-prepare context)
 
   (pg/migrate-up context)
   (pg/migrate-down context)
-
-  ;; (pg/migrate-down context "notebooks")
-
 
   (pg/execute! context {:sql ["select * from scim.schema"]})
 
@@ -113,10 +108,5 @@
        (mapv :id))
 
   (pg.repo/select context {:table :scim.resourcetype})
-
-
-
-  ;; (pg/generate-migration "init")
-  ;; (pg/generate-migration "notebooks")
 
   )
