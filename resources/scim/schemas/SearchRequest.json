@@ -1,0 +1,101 @@
+{
+  "id": "urn:ietf:params:scim:api:messages:2.0:SearchRequest",
+  "name": "SearchRequest",
+  "description": "Schema for representing a search request",
+  "attributes": [
+    {
+      "name": "schemas",
+      "type": "string",
+      "multiValued": true,
+      "description": "The schemas attribute must contain the URI of the schema: urn:ietf:params:scim:api:messages:2.0:SearchRequest",
+      "required": true,
+      "caseExact": true,
+      "mutability": "readWrite",
+      "returned": "default",
+      "uniqueness": "none"
+    },
+    {
+      "name": "attributes",
+      "type": "string",
+      "multiValued": true,
+      "description": "A multi-valued list of strings indicating the names of resource attributes to return in the response, overriding the set of attributes that would be returned by default.",
+      "required": false,
+      "caseExact": false,
+      "mutability": "readWrite",
+      "returned": "default",
+      "uniqueness": "none"
+    },
+    {
+      "name": "excludedAttributes",
+      "type": "string",
+      "multiValued": true,
+      "description": "A multi-valued list of strings indicating the names of resource attributes to be removed from the default set of attributes to return.",
+      "required": false,
+      "caseExact": false,
+      "mutability": "readWrite",
+      "returned": "default",
+      "uniqueness": "none"
+    },
+    {
+      "name": "filter",
+      "type": "string",
+      "multiValued": false,
+      "description": "The filter string used to request a subset of resources. The filter string MUST be a valid SCIM filter per Section 3.4.2.2.",
+      "required": false,
+      "caseExact": false,
+      "mutability": "readWrite",
+      "returned": "default",
+      "uniqueness": "none"
+    },
+    {
+      "name": "sortBy",
+      "type": "string",
+      "multiValued": false,
+      "description": "A string indicating the attribute whose value SHALL be used to order the returned responses.",
+      "required": false,
+      "caseExact": false,
+      "mutability": "readWrite",
+      "returned": "default",
+      "uniqueness": "none"
+    },
+    {
+      "name": "sortOrder",
+      "type": "string",
+      "multiValued": false,
+      "description": "A string indicating the order in which the sortBy parameter is applied. Allowed values are 'ascending' and 'descending'.",
+      "required": false,
+      "caseExact": false,
+      "canonicalValues": [
+        "ascending",
+        "descending"
+      ],
+      "mutability": "readWrite",
+      "returned": "default",
+      "uniqueness": "none"
+    },
+    {
+      "name": "startIndex",
+      "type": "integer",
+      "multiValued": false,
+      "description": "An integer indicating the 1-based index of the first query result.",
+      "required": false,
+      "mutability": "readWrite",
+      "returned": "default",
+      "uniqueness": "none",
+      "multipleOf": 1.0,
+      "minimum": 1
+    },
+    {
+      "name": "count",
+      "type": "integer",
+      "multiValued": false,
+      "description": "An integer indicating the desired maximum number of query results per page.",
+      "required": false,
+      "mutability": "readWrite",
+      "returned": "default",
+      "uniqueness": "none",
+      "multipleOf": 1.0,
+      "minimum": 0
+    }
+  ]
+}

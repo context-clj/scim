@@ -1,0 +1,34 @@
+{
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "id":"2819c223-7f76-453a-919d-413861904646",
+    "externalId":"dschrute",
+    "meta":{
+        "resourceType": "User",
+        "created":"2011-08-01T18:29:49.793Z",
+        "lastModified":"2011-08-01T18:29:49.793Z",
+        "location":"https://example.com/v2/Users/2819c223...",
+        "version":"W\/\"f250dd84f0671c3\""
+    },
+    "name":{
+        "formatted": "Mr. Dwight K Schrute, III",
+        "familyName": "Schrute",
+        "givenName": "Dwight",
+        "middleName": "Kurt",
+        "honorificPrefix": "Mr.",
+        "honorificSuffix": "III"
+    },
+    "userName":"dschrute",
+    "phoneNumbers":[
+        {
+            "value":"555-555-8377",
+            "type":"work"
+        }
+    ],
+    "emails":[
+        {
+            "value":"dschrute@example.com",
+            "type":"work",
+            "primary": true
+        }
+    ]
+}
