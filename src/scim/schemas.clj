@@ -73,9 +73,7 @@
               "Schema" (fn []
                          [:table.uui-table {:class "text-sm border border-gray-200"}
                           [:tbody (mapcat attribute-rows (:attributes sch))]])
-              "JSON" (fn []
-                       [:pre.uui-code
-                        (cheshire.core/generate-string sch {:pretty true})]))]
+              "JSON" (fn [] (uui/json-block sch)))]
     (if (uui/hx-target request)
       (uui/response tabs)
       (uui/layout
