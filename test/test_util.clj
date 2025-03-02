@@ -13,7 +13,7 @@
 (defn ensure-system []
   (or @system-context
       (let [pg-config (pgd/ensure-pg "scim-pg-test")]
-        (def context (system/start-system (assoc scim/default-config :pg pg-config)))
+        (def context (system/start-system (assoc scim/default-config :pg pg-config :http {:port 8990})))
         (reset! system-context context)))
   :ok)
 
