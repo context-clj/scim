@@ -1,4 +1,4 @@
-{:paths ["src"]
+{:paths ["src" "resources"]
  :jvm-opts ["-Djdk.attach.allowAttachSelf"]
  :deps {org.clojure/clojure    {:mvn/version "1.12.0"}
         context/system         {:local/root "./libs/system"}
@@ -7,7 +7,7 @@
         context/http           {:local/root "./libs/http"}}
  :aliases
  {:dev
-  {:extra-paths ["dev" "test" "resources" "shadow-target/shadow/dev" "shadow-target/stylo/dev"]
+  {:extra-paths ["dev" "test" "resources"]
    :jvm-opts []#_["-Dclojure.compiler.direct-linking=true"
               "-XX:MaxDirectMemorySize=16g" "-XX:+UseLargePages"
               "--add-opens=java.base/java.nio=ALL-UNNAMED"

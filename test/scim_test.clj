@@ -17,14 +17,20 @@
     )
 
   (matcho/match
-      (subj/search-resource tu/context {:resourceType "schema" :attributes [:name :id]})
-    [{:name "User", :id "urn:ietf:params:scim:schemas:core:2.0:User"}
+      (sort-by :id (subj/search-resource tu/context {:resourceType "schema" :attributes [:name :id]}))
+
+    [{:name "SearchRequest",
+      :id "urn:ietf:params:scim:api:messages:2.0:SearchRequest"}
      {:name "Group", :id "urn:ietf:params:scim:schemas:core:2.0:Group"}
-     {:name "ResourceType", :id "urn:ietf:params:scim:schemas:core:2.0:ResourceType"}
+     {:name "ResourceType",
+      :id "urn:ietf:params:scim:schemas:core:2.0:ResourceType"}
      {:name "Schema", :id "urn:ietf:params:scim:schemas:core:2.0:Schema"}
-     {:name "SearchRequest", :id "urn:ietf:params:scim:api:messages:2.0:SearchRequest"}
-     {:name "Service Provider Configuration", :id "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"}
-     {:name "EnterpriseUser", :id "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"}])
+     {:name "Service Provider Configuration",
+      :id "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"}
+     {:name "User", :id "urn:ietf:params:scim:schemas:core:2.0:User"}
+     {:name "EnterpriseUser",
+      :id "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"}]
+    )
 
   (tu/execute! {:sql "select * from scim.resourcetype"})
 
